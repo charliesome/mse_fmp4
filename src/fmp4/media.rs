@@ -97,7 +97,7 @@ impl Default for MovieFragmentHeaderBox {
 #[derive(Debug)]
 pub struct TrackFragmentBox {
     pub tfhd_box: TrackFragmentHeaderBox,
-    pub tfdt_box: TrackFragmentBaseMediaDecodeTimeBox,
+    pub tfdt_box: Option<TrackFragmentBaseMediaDecodeTimeBox>,
     pub trun_box: TrackRunBox,
 }
 impl TrackFragmentBox {
@@ -110,7 +110,7 @@ impl TrackFragmentBox {
         };
         TrackFragmentBox {
             tfhd_box: TrackFragmentHeaderBox::new(track_id),
-            tfdt_box: TrackFragmentBaseMediaDecodeTimeBox,
+            tfdt_box: None,
             trun_box: TrackRunBox::default(),
         }
     }
@@ -121,13 +121,15 @@ impl Mp4Box for TrackFragmentBox {
     fn box_payload_size(&self) -> Result<u32> {
         let mut size = 0;
         size += box_size!(self.tfhd_box);
-        size += box_size!(self.tfdt_box);
+        size += optional_box_size!(self.tfdt_box);
         size += box_size!(self.trun_box);
         Ok(size)
     }
     fn write_box_payload<W: Write>(&self, mut writer: W) -> Result<()> {
         write_box!(writer, self.tfhd_box);
-        write_box!(writer, self.tfdt_box);
+        if let Some(tfdt_box) = &self.tfdt_box {
+            write_box!(writer, tfdt_box);
+        }
         write_box!(writer, self.trun_box);
         Ok(())
     }
