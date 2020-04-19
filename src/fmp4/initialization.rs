@@ -249,9 +249,9 @@ impl Mp4Box for TrackBox {
 #[allow(missing_docs)]
 #[derive(Debug)]
 pub struct TrackHeaderBox {
-    track_id: u32,
+    pub track_id: u32,
     pub duration: u32,
-    volume: i16,     // fixed point 8.8
+    pub volume: i16, // fixed point 8.8
     pub width: u32,  // fixed point 16.16
     pub height: u32, // fixed point 16.16
 }
