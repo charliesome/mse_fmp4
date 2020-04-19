@@ -125,8 +125,8 @@ impl Mp4Box for MovieExtendsHeaderBox {
 #[allow(missing_docs)]
 #[derive(Debug)]
 pub struct TrackExtendsBox {
-    track_id: u32,
-    default_sample_description_index: u32,
+    pub track_id: u32,
+    pub default_sample_description_index: u32,
     pub default_sample_duration: u32,
     pub default_sample_size: u32,
     pub default_sample_flags: u32,
