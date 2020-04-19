@@ -421,10 +421,11 @@ impl Mp4Box for MediaHeaderBox {
 }
 
 /// 8.4.3 Handler Reference Box (ISO/IEC 14496-12).
+#[allow(missing_docs)]
 #[derive(Debug)]
 pub struct HandlerReferenceBox {
-    handler_type: [u8; 4],
-    name: CString,
+    pub handler_type: [u8; 4],
+    pub name: CString,
 }
 impl HandlerReferenceBox {
     fn new(is_video: bool) -> Self {
