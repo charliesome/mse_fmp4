@@ -137,7 +137,7 @@ impl Mp4Box for TrackFragmentBox {
 #[allow(missing_docs)]
 #[derive(Debug)]
 pub struct TrackFragmentHeaderBox {
-    track_id: u32,
+    pub track_id: u32,
     pub duration_is_empty: bool,
     pub default_base_is_moof: bool,
     pub base_data_offset: Option<u64>,
