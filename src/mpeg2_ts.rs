@@ -56,7 +56,7 @@ fn make_initialization_segment(
     track.tkhd_box.width = (avc_stream.width as u32) << 16;
     track.tkhd_box.height = (avc_stream.height as u32) << 16;
     track.tkhd_box.duration = video_duration;
-    track.edts_box.elst_box.media_time = avc_stream.start_time();
+    track.edts_box.as_mut().unwrap().elst_box.media_time = avc_stream.start_time();
     track.mdia_box.mdhd_box.timescale = Timestamp::RESOLUTION as u32;
     track.mdia_box.mdhd_box.duration = video_duration;
 

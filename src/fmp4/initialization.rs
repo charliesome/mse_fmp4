@@ -214,7 +214,7 @@ impl Mp4Box for MovieHeaderBox {
 #[derive(Debug)]
 pub struct TrackBox {
     pub tkhd_box: TrackHeaderBox,
-    pub edts_box: EditBox,
+    pub edts_box: Option<EditBox>,
     pub mdia_box: MediaBox,
 }
 impl TrackBox {
@@ -222,7 +222,7 @@ impl TrackBox {
     pub fn new(is_video: bool) -> Self {
         TrackBox {
             tkhd_box: TrackHeaderBox::new(is_video),
-            edts_box: EditBox::default(),
+            edts_box: Some(EditBox::default()),
             mdia_box: MediaBox::new(is_video),
         }
     }
@@ -233,13 +233,15 @@ impl Mp4Box for TrackBox {
     fn box_payload_size(&self) -> Result<u32> {
         let mut size = 0;
         size += box_size!(self.tkhd_box);
-        size += box_size!(self.edts_box);
+        size += optional_box_size!(self.edts_box);
         size += box_size!(self.mdia_box);
         Ok(size)
     }
     fn write_box_payload<W: Write>(&self, mut writer: W) -> Result<()> {
         write_box!(writer, self.tkhd_box);
-        write_box!(writer, self.edts_box);
+        if let Some(edts_box) = &self.edts_box {
+            write_box!(writer, edts_box);
+        }
         write_box!(writer, self.mdia_box);
         Ok(())
     }
