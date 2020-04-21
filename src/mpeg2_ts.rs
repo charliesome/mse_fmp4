@@ -63,9 +63,7 @@ fn make_initialization_segment(
     let avc_sample_entry = AvcSampleEntry {
         width: avc_stream.width as u16,
         height: avc_stream.height as u16,
-        avcc_box: AvcConfigurationBox {
-            configuration: avc_stream.configuration.clone(),
-        },
+        avcc_box: AvcConfigurationBox::Record(avc_stream.configuration.clone()),
     };
     track
         .mdia_box

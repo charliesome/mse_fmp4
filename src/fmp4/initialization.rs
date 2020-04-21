@@ -807,18 +807,34 @@ impl Mp4Box for AvcSampleEntry {
 /// Box that contains AVC Decoder Configuration Record.
 #[allow(missing_docs)]
 #[derive(Debug)]
-pub struct AvcConfigurationBox {
-    pub configuration: AvcDecoderConfigurationRecord,
+pub enum AvcConfigurationBox {
+    Record(AvcDecoderConfigurationRecord),
+    Raw(Vec<u8>),
 }
 impl Mp4Box for AvcConfigurationBox {
     const BOX_TYPE: [u8; 4] = *b"avcC";
 
     fn box_payload_size(&self) -> Result<u32> {
-        let size = track!(ByteCounter::calculate(|w| self.configuration.write_to(w)))?;
+        let size = match self {
+            AvcConfigurationBox::Record(config) => {
+                track!(ByteCounter::calculate(|w| config.write_to(w)))?
+            }
+            AvcConfigurationBox::Raw(bytes) => {
+                bytes.len() as u64
+            }
+        };
+
         Ok(size as u32)
     }
-    fn write_box_payload<W: Write>(&self, writer: W) -> Result<()> {
-        track!(self.configuration.write_to(writer))
+    fn write_box_payload<W: Write>(&self, mut writer: W) -> Result<()> {
+        match self {
+            AvcConfigurationBox::Record(config) => {
+                track!(config.write_to(writer))
+            }
+            AvcConfigurationBox::Raw(bytes) => {
+                track_io!(writer.write_all(bytes))
+            }
+        }
     }
 }
 
