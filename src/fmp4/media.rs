@@ -202,7 +202,9 @@ impl Mp4Box for TrackFragmentHeaderBox {
 
 /// 8.8.12 Track fragment decode time (ISO/IEC 14496-12).
 #[derive(Debug)]
-pub struct TrackFragmentBaseMediaDecodeTimeBox;
+pub struct TrackFragmentBaseMediaDecodeTimeBox {
+    pub base_media_decode_time: u32,
+}
 impl Mp4Box for TrackFragmentBaseMediaDecodeTimeBox {
     const BOX_TYPE: [u8; 4] = *b"tfdt";
 
@@ -213,7 +215,7 @@ impl Mp4Box for TrackFragmentBaseMediaDecodeTimeBox {
         Ok(4)
     }
     fn write_box_payload<W: Write>(&self, mut writer: W) -> Result<()> {
-        write_u32!(writer, 0); // base_media_decode_time
+        write_u32!(writer, self.base_media_decode_time);
         Ok(())
     }
 }
